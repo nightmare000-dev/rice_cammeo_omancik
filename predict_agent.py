@@ -9,7 +9,7 @@ FEATURES = [
     "Minor_Axis_Length",
     "Eccentricity",
     "Convex_Area",
-    "Extent"
+    "Extent",
 ]
 
 
@@ -18,7 +18,7 @@ def load_model(filename):
         return pickle.load(file)
 
 
-def classify(model, input_file, output_file):
+def classify(model_data, input_file, output_file):
     X = []
 
     with open(input_file, "r", encoding="utf-8-sig") as file:
@@ -26,8 +26,7 @@ def classify(model, input_file, output_file):
 
         # Нормализуем названия столбцов
         reader.fieldnames = [
-            name.strip().split()[0]
-            for name in reader.fieldnames
+            name.strip().split()[0] for name in reader.fieldnames
         ]
 
         for column in FEATURES:
@@ -35,17 +34,19 @@ def classify(model, input_file, output_file):
                 raise ValueError(f"Отсутствует столбец: {column}")
 
         for row in reader:
-            X.append([
-                float(row[col])
-                for col in FEATURES
-            ])
+            X.append([float(row[col]) for col in FEATURES])
 
     if not X:
         print("Файл не содержит данных.")
         return
 
+    # Извлекаем модель и кодировщик меток
+    model = model_data["model"]
+    label_encoder = model_data["label_encoder"]
+
     # Предсказываем сорт риса и считаем точность
-    predictions = model.predict(X)
+    raw_predictions = model.predict(X)
+    predictions = label_encoder.inverse_transform(raw_predictions)
     probabilities = model.predict_proba(X)
 
     # Сохраняем результаты
@@ -55,10 +56,7 @@ def classify(model, input_file, output_file):
         writer.writerow(["Class", "Confidence"])
 
         for prediction, probability in zip(predictions, probabilities):
-            writer.writerow([
-                prediction,
-                round(max(probability) * 100, 2)
-            ])
+            writer.writerow([prediction, round(max(probability) * 100, 2)])
 
     print(f"Обработано зёрен: {len(predictions)}")
     print(f"Результаты сохранены в {output_file}")
@@ -67,8 +65,4 @@ def classify(model, input_file, output_file):
 if __name__ == "__main__":
     model = load_model("rice_model.pkl")
 
-    classify(
-        model,
-        "Rice_Cammeo_Osmancik_test.csv",
-        "results.csv"
-    )
+    classify(model, "Rice_Cammeo_Osmancik_test.csv", "results.csv")
