@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Классификация риса</title>
+        <style>
+        @font-face {
+          font-family: Lack;
+          src: url(/static/lack-regular.otf);
+        }
+        * {
+            font-family: Lack;
+        }
+        body {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+            color: #333;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .controls {
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        button {
+            padding: 10px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            background-color: #2563eb;
+            color: white;
+        }
+        button:hover {
+            background-color: #1d4ed8;
+        }
+        button#add-row-btn {
+            background-color: #4b5563;
+        }
+        button#add-row-btn:hover {
+            background-color: #374151;
+        }
+        button.remove-btn {
+            background-color: #dc2626;
+            padding: 6px 10px;
+            font-size: 12px;
+        }
+        button.remove-btn:hover {
+            background-color: #b91c1c;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 16px;
+        }
+        th, td {
+            border: 1px solid #d1d5db;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f3f4f6;
+            font-size: 13px;
+        }
+        input[type="number"] {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 6px;
+            border: 1px solid #9ca3af;
+            border-radius: 3px;
+        }
+        #result-box {
+            margin-top: 20px;
+            padding: 14px 16px;
+            border-radius: 6px;
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+            font-size: 16px;
+            display: none;
+        }
+        #status {
+            font-size: 14px;
+            color: #4b5563;
+            margin-top: 10px;
+        }
+        dialog {
+            border: none;
+            border-radius: 8px;
+            padding: 10vh 10vw;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        dialog::backdrop {
+            background: rgba(0, 0, 0, 0.5);
+        }
+        </style>
+    </head>
+    <body>
+
+
+        <div class="controls">
+            <div style="display: flex; align-items: flex-end; gap: 20px">
+                <div>
+                    <h1>Классификация риса</h1>
+                    <button type="button" id="add-row-btn">+ Добавить запись</button>
+                    <button type="button" id="classify-btn">Классифицировать</button>
+                </div>
+
+                <div style="flex: 1; display: flex; justify-content: flex-end;">
+                    <img src="/static/pii_logo.png" width="100px" height="100px"></img>
+                    <span style="align-self: center; padding-left: 6px; font-size: 1.7em">☓</span>
+                    <img src="/static/rizz_logo_2.png" width="100px" height="100px"></img>
+                </div>
+            </div>
+
+            <table id="rice-table">
+                <thead>
+                    <tr>
+                        <th>Площадь</th>
+                        <th>Периметр</th>
+                        <th>Длина большей оси</th>
+                        <th>Длина меньшей оси</th>
+                        <th>Эксцентричность</th>
+                        <th>Площадь выпуклой области</th>
+                        <th>Заполненность</th>
+                        <th>Действие</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <!-- Rows are inserted dynamically via script.js -->
+                </tbody>
+            </table>
+
+            <div id="status"></div>
+            <div id="result-box"></div>
+
+            <script src="/static/script.js"></script>
+
+            <dialog id="popup">
+                <div style="display: flex; flex-direction: column; align-items: center">
+                    <h2 style="color: #cacaca; padding: 0; margin: 0; font-weight: normal;">Сорт риса:</h2>
+                    <div style="display: flex; align-items: center; gap: 7px; margin-top: 5px;">
+                        <span id="riceType" style="font-size: 2em; font-weight: 700;">Cameo</span>
+                        <span id="predictPercents" style="font-size: 1.5em; border: 3px solid black; padding: 6px; border-radius: 15px;">90%</span>
+                    </div>
+                    <button onclick="document.getElementById('popup').close()" style="margin-top: 30px; width: 100%;">Понятно</button>
+                </div>
+            </dialog>
+            <dialog id="errorPopup">
+                <div style="display: flex; flex-direction: column; align-items: center">
+                    <h1 id='errorText' style="padding: 0; margin: 0; font-size: 1em; font-weight: normal;"></h1>
+                    <button onclick="document.getElementById('errorPopup').close()" style="margin-top: 30px; width: 100%;">Понятно</button>
+                </div>
+            </dialog>
+            <!--<button onclick="document.getElementById('popup').showModal()">Open Popup</button>-->
+    </body>
+</html>
