@@ -124,3 +124,49 @@ classifyBtn.addEventListener('click', classifyAverage);
 
 // Initialize with one empty row on page load
 addRow();
+
+const uploadBtn = document.getElementById('uploadBtn');
+
+// 2. Listen for when a file is selected
+uploadBtn.addEventListener('change', (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  // 3. Read the file content once loaded
+  reader.onload = (e) => {
+    const text = e.target.result;
+    const parsedData = parseCSV(text);
+    for (const row of parsedData) {
+        addRow(row)
+    }
+  };
+
+  reader.readAsText(file);
+
+  // Reset input so the same file can be selected again if needed
+  uploadBtn.value = '';
+});
+
+// 4. Parse text into rows of 7 numbers
+function parseCSV(csvText) {
+  // Split by line breaks (handles both Windows \r\n and Unix \n) and remove empty lines
+  const lines = csvText.trim().split(/\r?\n/).filter(line => line.trim() !== '');
+  const result = [];
+
+  lines.forEach((line, index) => {
+    // Split by comma and convert each cell to a Number
+    const row = line.split(',').map(cell => Number(cell.trim()));
+
+    // Check if the row has 7 columns and all values are valid numbers
+    // (This automatically skips a text header row if one exists)
+    if (row.length === 7 && row.every(val => !isNaN(val))) {
+      result.push(row);
+    } else {
+      console.warn(`Skipped row ${index + 1}:`, line);
+    }
+  });
+
+  return result;
+}
