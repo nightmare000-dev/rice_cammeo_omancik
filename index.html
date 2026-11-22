@@ -17,10 +17,14 @@
 
         <h1>Классификация риса</h1>
 
-        <p class="description">
-            Загрузите CSV-файл с характеристиками зёрен риса.
-        </p>
+        <!-- Поле вывода -->
+        <textarea
+            id="output"
+            readonly
+            placeholder="Здесь появятся результаты классификации..."
+        ></textarea>
 
+        <!-- Выбор файла -->
         <div class="upload-section">
 
             <label for="file-input" class="upload-button">
@@ -39,6 +43,7 @@
 
         </div>
 
+        <!-- Основные кнопки -->
         <div class="buttons">
 
             <button
@@ -57,15 +62,17 @@
 
         </div>
 
-        <div class="result-section">
+        <!-- Добавление строк -->
+        <div class="add-section">
 
-            <h2>Результаты классификации</h2>
+            <button
+                id="add-row-button"
+                onclick="addRow()"
+            >
+                +
+            </button>
 
-            <textarea
-                id="output"
-                readonly
-                placeholder="Здесь появятся результаты классификации..."
-            ></textarea>
+            <div id="additional-rows"></div>
 
         </div>
 

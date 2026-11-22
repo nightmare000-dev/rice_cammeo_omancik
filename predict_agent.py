@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
+
 import csv
 import pickle
+import numpy as np
 
 FEATURES = [
     "Area",
@@ -11,7 +13,6 @@ FEATURES = [
     "Convex_Area",
     "Extent",
 ]
-
 
 def load_model(filename):
     with open(filename, "rb") as file:
@@ -44,25 +45,41 @@ def classify(model_data, input_file, output_file):
     model = model_data["model"]
     label_encoder = model_data["label_encoder"]
 
-    # Предсказываем сорт риса и считаем точность
+    X = np.array(X, dtype=float)
+
+    print("Тип модели:", type(model).__name__)
+
+    # Классификация
     raw_predictions = model.predict(X)
-    predictions = label_encoder.inverse_transform(raw_predictions)
+
+    predictions = label_encoder.inverse_transform(
+        raw_predictions.astype(int)
+    )
+
+    # Получаем вероятности принадлежности к классам
     probabilities = model.predict_proba(X)
 
-    # Сохраняем результаты
+    # Сохраняем результаты классификации
     with open(output_file, "w", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
 
         writer.writerow(["Class", "Confidence"])
 
         for prediction, probability in zip(predictions, probabilities):
-            writer.writerow([prediction, round(max(probability) * 100, 2)])
+            writer.writerow([
+                prediction,
+                round(float(max(probability)) * 100, 2)
+            ])
 
-    print(f"Обработано зёрен: {len(predictions)}")
+    print(f"\nОбработано зёрен: {len(predictions)}")
     print(f"Результаты сохранены в {output_file}")
 
 
 if __name__ == "__main__":
-    model = load_model("rice_model.pkl")
+    model_data = load_model("rice_model.pkl")
 
-    classify(model, "Rice_Cammeo_Osmancik_test.csv", "results.csv")
+    classify(
+        model_data,
+        "/home/madnessam/Code/hackathon/Rice_Cammeo_Osmancik_test_with_class.csv",
+        "results.csv"
+    )

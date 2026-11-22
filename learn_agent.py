@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import csv
 import pickle
+import time
 
 from sklearn.metrics import accuracy_score, classification_report
 from sklearn.model_selection import train_test_split
@@ -69,8 +70,12 @@ model = XGBClassifier(
     eval_metric="logloss",
 )
 
+start = time.time()
+
 # Обучаем модель
 model.fit(X_train, y_train)
+end = time.time()
+print(f"Speed: {end - start}")
 
 # Проверяем качество
 predictions = model.predict(X_test)
@@ -84,7 +89,7 @@ print(
 )
 
 # Сохраняем обученную модель и кодировщик меток
-with open("rice_model.pkl", "wb") as file:
-    pickle.dump({"model": model, "label_encoder": label_encoder}, file)
+# with open("rice_model.pkl", "wb") as file:
+#     pickle.dump({"model": model, "label_encoder": label_encoder}, file)
 
 print("\nМодель успешно сохранена!")

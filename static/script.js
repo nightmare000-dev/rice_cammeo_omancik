@@ -4,9 +4,10 @@ const output = document.getElementById("output");
 
 const classifyButton = document.getElementById("classify-button");
 const clearButton = document.getElementById("clear-button");
+const additionalRows = document.getElementById("additional-rows");
 
 
-// Обработка выбора файла
+// Выбор файла
 fileInput.addEventListener("change", function() {
 
     const file = fileInput.files[0];
@@ -14,8 +15,6 @@ fileInput.addEventListener("change", function() {
     if (file) {
         fileName.textContent = "Выбран файл: " + file.name;
         output.value = "";
-
-        console.log("Файл успешно выбран:", file.name);
     }
 
 });
@@ -27,6 +26,21 @@ function clearResults() {
     fileInput.value = "";
     fileName.textContent = "Файл не выбран";
     output.value = "";
+    additionalRows.innerHTML = "";
+
+}
+
+
+// Добавление строки
+function addRow() {
+
+    const row = document.createElement("div");
+
+    row.className = "additional-row";
+
+    row.textContent = "Новая строка";
+
+    additionalRows.appendChild(row);
 
 }
 
@@ -65,7 +79,10 @@ async function classifyRice() {
         let result = `Обработано зёрен: ${data.count}\n\n`;
 
         data.results.forEach((item, index) => {
-            result += `${index + 1}. ${item.Class} — ${item.Confidence}%\n`;
+
+            result +=
+                `${index + 1}. ${item.Class} — ${item.Confidence}%\n`;
+
         });
 
         output.value = result;
@@ -84,5 +101,5 @@ async function classifyRice() {
 }
 
 
-// Очистка при загрузке страницы
+// Очистка при обновлении страницы
 window.addEventListener("load", clearResults);
